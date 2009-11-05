@@ -1,4 +1,4 @@
-var Project = (function() // XXX change name
+var Backpack = (function() // XXX change namespace
 {
     var $inits = [],
         $modules = {},
@@ -46,32 +46,46 @@ var Project = (function() // XXX change name
         }
     };
 })();
-(function(Project) // change to projects real namespace
+(function(Backpack) // change to projects real namespace
 {
-    // declare functions used by this module
-    function doSomething()
-    {
-    };
-
     // setup the modules init methods (register, init, run) and external methods
-    Project.module =
+    Backpack.slideBar =
     {
-        NAME: 'module',
+        NAME: 'slideBar',
 
-        // runs during Project.init()
+        // runs during Backpack.init()
         init: function()
         {
-            print('module inited');
         },
         
         // runs during addModule
         register: function()
         {
-            print('module registered');
         }
     };
 
     // register the module, this runs register
-    Project.addModule(Project.module);
-})(Project);
-Project.init();
+    Backpack.addModule(Backpack.slideBar);
+})(Backpack);
+(function(Backpack) // change to projects real namespace
+{
+    // setup the modules init methods (register, init, run) and external methods
+    Backpack.statusBar =
+    {
+        NAME: 'statusBar',
+
+        // runs during Backpack.init()
+        init: function()
+        {
+        },
+        
+        // runs during addModule
+        register: function()
+        {
+        }
+    };
+
+    // register the module, this runs register
+    Backpack.addModule(Backpack.statusBar);
+})(Backpack);
+Backpack.init();

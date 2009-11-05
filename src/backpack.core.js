@@ -1,4 +1,4 @@
-var Project = (function() // XXX change namespace
+var Backpack = (function() // XXX change namespace
 {
     var $inits = [],
         $modules = {},
