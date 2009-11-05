@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Project" basedir="."
+         default="build.all"
+>
+    <dirname property="project.basedir" file="${ant.file.Project}" />
+<!--
+    property definitions
+-->
+    <property name="project.src.dir" value="${project.basedir}/../src" />
+    <property name="project.output.dir" value="${project.basedir}/../build" />
+
+<!--
+    default target
+-->
+    <target name="project.core.build"
+            description="Builds Project"
+    >
+            <echo message="Building Project" />
+            <concat destfile="${project.output.dir}/project.js">
+                <filelist dir="${project.src.dir}">
+                    <file name="project.core.js" />
+                    <file name="project.module.js" />
+
+                    <!-- run must always be last because project doesn't provide an onReady outside statusBar and slideBar -->
+                    <file name="project.run.js" />
+                </filelist>
+            </concat>
+    </target>
+
+    <target name="build.all"
+            description="Builds Project."
+            depends="project.core.build"
+    />
+
+    <target name="test"
+            description="Test build"
+    >
+        <echo message="Running tests" />
+        <java jar="${project.test.rhino}"
+            fork="true"
+        >
+            <arg value="${project.test.runner}" />
+        </java>
+        <echo message="Testing complete" />
+    </target>
+</project>
