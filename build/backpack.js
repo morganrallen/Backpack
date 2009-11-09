@@ -46,6 +46,9 @@ var Backpack = (function() // XXX change namespace
             for(i = 0; i < $runs.length; i++) {
                 $modules[$runs[i]].run();
             }
+
+            this.ready = true;
+            this.fireEvent('ready');
         }
     };
 })();
@@ -135,14 +138,30 @@ var Backpack = (function() // XXX change namespace
 })(Backpack);
 (function(Backpack)
 {
+    var $eventQueue = [];
     Backpack.mixins =
     {
         fireEvent: function(type, data)
         {
-            ;;;console.log('Backpack.fireEvent', type);
+            if(!Backpack.ready) {
+                return $eventQueue.push(arguments);
+            }
+            
+            if($eventQueue.length > 0) {
+                var e;
+                while(e = $eventQueue.shift()) {
+                    ;;;console.log('Backpack.fireEvent', type);
+                    jQuery.event.call(arguments);
+                }
+            }
+
+            ;;;console.log('Backpack.fireEvent' + (Backpack.ready ? '' : '(!ready)'), type);
             jQuery.event.trigger(type, data, Backpack);
         },
-        on: Backpack.util.curry(jQuery.event.add, Backpack)
+        on: function(elem, type, handler, data)
+        {
+            jQuery.event.add.call(arguments);
+        }
     };
 })(Backpack);
 if(Backpack.mixins) {
@@ -152,7 +171,6 @@ if(Backpack.mixins) {
 }
 
 Backpack.init();
-build.filelist
-project.run.js
 // PRoject
+console.log(jQuery);
 Backpack.run();

@@ -26,7 +26,8 @@
     >
             <echo message="Building Backpack" />
             <echo message="${project.src.dir}" />
-            <concat destfile="${backpack.output.dir}/backpack.js">
+<!--             <concat destfile="${backpack.output.dir}/backpack.js"> -->
+            <concat destfile="/home/morgan/priv/devel/jetpack/hacking/testpack.js">
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />

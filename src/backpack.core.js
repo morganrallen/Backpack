@@ -17,6 +17,8 @@ var Backpack = (function() // XXX change namespace
 
             $modules[m.NAME] = m;
 
+            ;;;console.log('adding ' + m.NAME);
+
             if(m.register) {
                 m.register();
             }
@@ -38,6 +40,8 @@ var Backpack = (function() // XXX change namespace
             for(i = 0; i < $inits.length; i++) {
                 $modules[$inits[i]].init();
             }
+            this.ready = true;
+            this.fireEvent('ready');
         },
 
         run: function()
@@ -46,6 +50,7 @@ var Backpack = (function() // XXX change namespace
             for(i = 0; i < $runs.length; i++) {
                 $modules[$runs[i]].run();
             }
+
         }
     };
 })();

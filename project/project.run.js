@@ -1,2 +1,2 @@
 // PRoject
-Backpack.run();
+Backpack.init();
