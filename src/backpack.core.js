@@ -32,14 +32,17 @@ var Backpack = (function() // XXX change namespace
 
         init: function()
         {
+            ;;;console.log('Backpack.init');
             var i;
             // do some core setup
             for(i = 0; i < $inits.length; i++) {
                 $modules[$inits[i]].init();
             }
+        },
 
-            // do some core stuff
-
+        run: function()
+        {
+            ;;;console.log('Backpack.run');
             for(i = 0; i < $runs.length; i++) {
                 $modules[$runs[i]].run();
             }

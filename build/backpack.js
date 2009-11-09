@@ -32,22 +32,60 @@ var Backpack = (function() // XXX change namespace
 
         init: function()
         {
+            ;;;console.log('Backpack.init');
             var i;
             // do some core setup
             for(i = 0; i < $inits.length; i++) {
                 $modules[$inits[i]].init();
             }
+        },
 
-            // do some core stuff
-
+        run: function()
+        {
+            ;;;console.log('Backpack.run');
             for(i = 0; i < $runs.length; i++) {
                 $modules[$runs[i]].run();
             }
         }
     };
 })();
-(function(Backpack) // change to projects real namespace
+(function(Backpack)
 {
+    Backpack.util =
+    {
+        curry: function(b, f)
+        {
+            return function()
+            {
+                return b.apply(this, [f].concat(Array.prototype.splice.call(arguments,0)));
+            }
+        }
+    };
+})(Backpack);
+(function(Backpack)
+{
+    var ready = false,
+        sliderBody;
+
+    function handleClick(slider)
+    {
+        ;;;console.log('Backpack.sliderBody::handleClick');
+        if(!ready) {
+            ;;;console.error("Slider clicked before ready, did something go wrong?");
+            return;
+        }
+        
+        Backpack.fireEvent('slider-click', slider);
+    }
+
+    function handleReady(slider)
+    {
+        ;;;console.log('Backpack.sliderBody::handleReady');
+        sliderBody = slider;
+        Backpack.fireEvent('slider-ready', slider);
+        ready = true;
+    }
+
     // setup the modules init methods (register, init, run) and external methods
     Backpack.slideBar =
     {
@@ -56,11 +94,18 @@ var Backpack = (function() // XXX change namespace
         // runs during Backpack.init()
         init: function()
         {
+            ;;;console.log('Backpack.slideBar.init');
+            jetpack.slideBar.append({
+                onClick: handleClick,
+                onReady: handleReady,
+                width: 250
+            });
         },
         
         // runs during addModule
         register: function()
         {
+            jetpack.future.import('slideBar');
         }
     };
 
@@ -88,4 +133,26 @@ var Backpack = (function() // XXX change namespace
     // register the module, this runs register
     Backpack.addModule(Backpack.statusBar);
 })(Backpack);
+(function(Backpack)
+{
+    Backpack.mixins =
+    {
+        fireEvent: function(type, data)
+        {
+            ;;;console.log('Backpack.fireEvent', type);
+            jQuery.event.trigger(type, data, Backpack);
+        },
+        on: Backpack.util.curry(jQuery.event.add, Backpack)
+    };
+})(Backpack);
+if(Backpack.mixins) {
+    for(var i in Backpack.mixins) {
+        Backpack[i] = Backpack.mixins[i];
+    }
+}
+
 Backpack.init();
+build.filelist
+project.run.js
+// PRoject
+Backpack.run();

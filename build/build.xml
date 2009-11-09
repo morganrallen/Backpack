@@ -9,6 +9,15 @@
     <property name="backpack.src.dir" value="${backpack.basedir}/../src" />
     <property name="backpack.output.dir" value="${backpack.basedir}/../build" />
 
+    <condition 
+        property="project.src.dir"
+        value="${project.dir}"
+        else="${backpack.basedir}/../project/"
+    >
+        <isset property="project.dir" />
+    </condition>
+    <property name="project.build.filelist" value="${project.src.dir}/build.filelist" />
+
 <!--
     default target
 -->
@@ -16,15 +25,22 @@
             description="Builds Backpack"
     >
             <echo message="Building Backpack" />
+            <echo message="${project.src.dir}" />
             <concat destfile="${backpack.output.dir}/backpack.js">
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
+                    <file name="backpack.util.js" />
+
                     <file name="backpack.slideBar.js" />
                     <file name="backpack.statusBar.js" />
+                    
+                    <file name="backpack.mixins.js" />
 
-                    <!-- run must always be last because backpack doesn't provide an onReady outside statusBar and slideBar -->
-                    <file name="backpack.run.js" />
+                    <file name="backpack.init.js" />
+<!--                     <file name="backpack.run.js" /> -->
                 </filelist>
+
+                <fileset dir="${project.src.dir}" includesfile="${project.build.filelist}" />
             </concat>
     </target>
 
