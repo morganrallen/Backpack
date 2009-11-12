@@ -21,7 +21,7 @@
     <condition
         property="project.name"
         value="${property.name}"
-        else="projec"
+        else="project"
     >
         <isset property="project.name" />
     </condition>

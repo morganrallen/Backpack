@@ -16,6 +16,12 @@
                 $sliderBody.append('Blalalal');
             });
 
+            Backpack.on('slider-click', function(event, slider)
+            {
+                // won't work without patched Jetpack
+//                slider.icon = Backpack.scrap.images.icon;
+            });
+
             Backpack.on('status-ready', function(event, status)
             {
                 console.log(status);
