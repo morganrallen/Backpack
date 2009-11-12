@@ -2,12 +2,13 @@
 <project name="Backpack" basedir="."
          default="build.all"
 >
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
     <dirname property="backpack.basedir" file="${ant.file.Backpack}" />
 <!--
     property definitions
 -->
     <property name="backpack.src.dir" value="${backpack.basedir}/../src" />
-    <property name="backpack.output.dir" value="${backpack.basedir}/../build" />
+    <property name="backpack.output.dir" value="${backpack.basedir}/.." />
 
     <condition 
         property="project.src.dir"
@@ -16,18 +17,63 @@
     >
         <isset property="project.dir" />
     </condition>
-    <property name="project.build.filelist" value="${project.src.dir}/build.filelist" />
 
-<!--
-    default target
--->
+    <condition
+        property="project.name"
+        value="${property.name}"
+        else="projec"
+    >
+        <isset property="project.name" />
+    </condition>
+
+    <condition
+        property="project.namespace"
+        value="${property.namespace}"
+        else="Backpack"
+    >
+        <isset property="project.namespace" />
+    </condition>
+
+    <property name="project.build.filelist" value="${project.src.dir}/build.filelist" />
+    <property name="project.image.dest" value="${project.src.dir}/${project.name}.images.js" />
+
+    <target name="json-concat">
+        <propertyregex input="${path}"
+            override="yes"
+            property="file"
+            regexp=".*/([\w-_.]+).png.base64"
+            replace="\1" />
+        <concat destfile="${project.image.dest}" append="yes">
+            <string>'${file}': 'data:image/png;base64,</string>
+            <file file="${path}" />
+            <string>',</string>
+        </concat>
+    </target>
+
     <target name="backpack.core.build"
             description="Builds Backpack"
     >
+            <echo message="Encoding images" />
+            <exec executable="${backpack.basedir}/../bin/image2base64.sh">
+                <arg value="${project.src.dir}/images/*png" />
+            </exec>
+            <delete file="${project.image.dest}" />
+
+            <concat destfile="${project.image.dest}">
+                <string>${project.namespace}.${project.name}.images = &#123;</string>
+            </concat>
+            <foreach param="path" target="json-concat">
+                <path>
+                    <fileset dir="${project.src.dir}/images" includes="*base64" />
+                </path>
+            </foreach>
+            <concat destfile="${project.image.dest}" append="yes">
+                <string>&#125;;</string>
+            </concat>
+
+            <replaceregexp match="\,\}\;" replace="};" file="${project.image.dest}" />
             <echo message="Building Backpack" />
-            <echo message="${project.src.dir}" />
-<!--             <concat destfile="${backpack.output.dir}/backpack.js"> -->
-            <concat destfile="/home/morgan/priv/devel/jetpack/hacking/testpack.js">
+             <concat destfile="${backpack.output.dir}/backpack.js">
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />
@@ -43,6 +89,9 @@
 
                 <fileset dir="${project.src.dir}" includesfile="${project.build.filelist}" />
             </concat>
+            <delete>
+                <fileset dir="${project.src.dir}/images/" includes="*.base64" />
+            </delete>
     </target>
 
     <target name="build.all"

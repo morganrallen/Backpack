@@ -20,7 +20,7 @@
             {
                 console.log(status);
                 $statusBody = $(status.documentElement);
-                $statusBody.append('Blalalal');
+                $statusBody.append('<img src="' + Backpack.scrap.images.icon + '" />');
             });
         },
 
