@@ -76,6 +76,7 @@
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />
+                    <file name="backpack.event.js" />
                     <file name="backpack.mixins.js" />
 
                     <file name="backpack.slideBar.js" />

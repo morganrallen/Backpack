@@ -22,8 +22,9 @@
         ready = true;
     }
 
-    Backpack.on('running', function()
+    Backpack.event.setup('status-ready', function()
     {
+        ;;;console.log('Backpack.statusBar #Backpack.event.setup("status-ready")');
         jetpack.statusBar.append({
             onClick: handleClick,
             onReady: handleReady,
