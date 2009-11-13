@@ -3,6 +3,8 @@
     var ready = false,
         sliderBody;
 
+    jetpack.future.import('slideBar');
+
     function handleClick(slider)
     {
         ;;;console.log('Backpack.sliderBody::handleClick');
@@ -22,29 +24,12 @@
         ready = true;
     }
 
-    // setup the modules init methods (register, init, run) and external methods
-    Backpack.slideBar =
+    Backpack.on('running', function()
     {
-        NAME: 'slideBar',
-
-        // runs during Backpack.init()
-        init: function()
-        {
-            ;;;console.log('Backpack.slideBar.init');
-            jetpack.slideBar.append({
-                onClick: handleClick,
-                onReady: handleReady,
-                width: 250
-            });
-        },
-        
-        // runs during addModule
-        register: function()
-        {
-            jetpack.future.import('slideBar');
-        }
-    };
-
-    // register the module, this runs register
-    Backpack.addModule(Backpack.slideBar);
+        jetpack.slideBar.append({
+            onClick: handleClick,
+            onReady: handleReady,
+            width: 250
+        });
+    });
 })(Backpack);

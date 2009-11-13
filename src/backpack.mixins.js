@@ -20,6 +20,13 @@
             ;;;console.log('Backpack.fireEvent' + (Backpack.ready ? '' : '(!ready)'), type);
             jQuery.event.trigger(type, data, Backpack);
         },
-        on: Backpack.util.curry(jQuery.event.add, Backpack)
+        on: function(type, data)
+        {
+            jQuery.event.add(Backpack, type, data);
+        }
     };
+
+    for(var i in Backpack.mixins) {
+        Backpack[i] = Backpack.mixins[i];
+    }
 })(Backpack);

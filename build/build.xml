@@ -67,22 +67,20 @@
                     <fileset dir="${project.src.dir}/images" includes="*base64" />
                 </path>
             </foreach>
-            <concat destfile="${project.image.dest}" append="yes">
-                <string>&#125;;</string>
-            </concat>
+            <concat destfile="${project.image.dest}" append="yes">&#125;;</concat>
 
             <replaceregexp match="\,\}\;" replace="};" file="${project.image.dest}" />
             <echo message="Building Backpack" />
-             <concat destfile="${backpack.output.dir}/backpack.js">
+<!--             <concat destfile="${backpack.output.dir}/backpack.js"> -->
+                <concat destfile="/home/morgan/priv/devel/jetpack/hacking/testpack.js">
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />
+                    <file name="backpack.mixins.js" />
 
                     <file name="backpack.slideBar.js" />
                     <file name="backpack.statusBar.js" />
                     
-                    <file name="backpack.mixins.js" />
-
                     <file name="backpack.init.js" />
 <!--                     <file name="backpack.run.js" /> -->
                 </filelist>
