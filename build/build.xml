@@ -79,6 +79,7 @@
                     <file name="backpack.event.js" />
                     <file name="backpack.mixins.js" />
 
+                    <file name="backpack.selection.js" />
                     <file name="backpack.slideBar.js" />
                     <file name="backpack.statusBar.js" />
                     

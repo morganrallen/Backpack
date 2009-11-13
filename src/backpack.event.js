@@ -4,6 +4,7 @@
 
     Backpack.event =
     {
+        fireEvent: Backpack.fireEvent,
         on: function(type, data)
         {
             ;;;console.log('Backpack.event.on', type);

@@ -29,4 +29,9 @@
         $statusBody = $(status.documentElement);
         $statusBody.append('<img src="' + Backpack.scrap.images.icon + '" />');
     });
+
+    Backpack.event.on('selection', function(event, selection)
+    {
+        ;;;console.log('Backpack.scrap.on("selection")', selection.text);
+    });
 })(Backpack);

@@ -18,7 +18,7 @@
             }
 
             ;;;console.log('Backpack.fireEvent' + (Backpack.ready ? '' : '(!ready)'), type);
-            jQuery.event.trigger(type, data, Backpack);
+            jQuery.event.trigger(type, [data], Backpack);
         },
         on: function(type, data)
         {
