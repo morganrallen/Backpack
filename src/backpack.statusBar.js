@@ -3,9 +3,9 @@
     var ready = false,
         statusBody;
 
-    function handleClick(status)
+    function statusBar_handleStatusClick(status)
     {
-        ;;;console.log('Backpack.statusBody::handleClick');
+        ;;;console.log('Backpack.statusBody::statusBar_handleStatusClick');
         if(!ready) {
             ;;;console.error("Slider clicked before ready, did something go wrong?");
             return;
@@ -14,36 +14,23 @@
         Backpack.fireEvent('status-click', status);
     }
 
-    function handleReady(status)
+    function statusBar_handleStatusReady(status)
     {
-        ;;;console.log('Backpack.statusBody::handleReady');
+        ;;;console.log('Backpack.statusBody::statusBar_handleStatusReady');
         statusBody = status;
         Backpack.fireEvent('status-ready', status);
         ready = true;
     }
 
-    // setup the modules init methods (register, init, run) and external methods
-    Backpack.statusBar =
+    function statusBar_handleStatusReadySetup()
     {
-        NAME: 'statusBar',
+        ;;;console.log('Backpack.statusBar #Backpack.event.setup("status-ready")');
+        jetpack.statusBar.append({
+            onClick: statusBar_handleStatusClick,
+            onReady: statusBar_handleStatusReady,
+            width: 40
+        });
+    }
 
-        // runs during Backpack.init()
-        init: function()
-        {
-            ;;;console.log('Backpack.statusBar.init');
-            jetpack.statusBar.append({
-                onClick: handleClick,
-                onReady: handleReady,
-                width: 40
-            });
-        },
-        
-        // runs during addModule
-        register: function()
-        {
-        }
-    };
-
-    // register the module, this runs register
-    Backpack.addModule(Backpack.statusBar);
+    Backpack.event.setup('status-ready', statusBar_handleStatusReadySetup);
 })(Backpack);

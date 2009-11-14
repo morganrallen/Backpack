@@ -23,6 +23,7 @@
                 <file name="${backpack.core.output.js}" />
                 <file name="${project.output.js}" />
             </filelist>
+            <string>${backpack.namespace}.run();</string>
         </concat>
     </target>
 
@@ -83,9 +84,12 @@
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />
+                    <file name="backpack.event.js" />
+                    <file name="backpack.e4x.js" />
 
                     <file name="backpack.slideBar.js" />
                     <file name="backpack.statusBar.js" />
+                    <file name="backpack.selection.js" />
                     
                     <file name="backpack.mixins.js" />
                 </filelist>
@@ -96,6 +100,23 @@
         <concat destfile="${project.output.js}">
             <fileset dir="${project.src.dir.js}" includes="*.js" />
         </concat>
+    </target>
+
+    <target name="project.images.encode">
+        <echo message="Encoding images" />
+        <concat destfile="${project.output.images}">
+            <string>${backpack.namespace}.${project.name}.images = &#123;</string>
+        </concat>
+        <foreach param="path" target="project.images.encode.concat">
+            <param name="concat.output" value="${project.output.images}" />
+            <path>
+                <fileset dir="${project.src.dir.images}" includes="*png" />
+            </path>
+        </foreach>
+        <concat destfile="${project.output.images}" append="yes">
+            <string>&#125;;</string>
+        </concat>
+        <replaceregexp match="\,\}\;" replace="};" file="${project.output.images}" />
     </target>
 
     <target name="project.images.encode.concat">
@@ -120,24 +141,33 @@
         <delete file="${path}.base64" />
     </target>
 
-    <target name="project.images.encode">
-        <echo message="Encoding images" />
-        <concat destfile="${project.output.images}">
-            <string>${backpack.namespace}.${project.name}.images = &#123;</string>
+    <target name="project.xml.include">
+        <echo>Including XML</echo>
+        <concat destfile="${project.output.xml}">
+            <string>${backpack.namespace}.${project.name}.xml = &#123;</string>
         </concat>
-        <foreach param="path" target="project.images.encode.concat">
-            <param name="concat.output" value="${project.output.images}" />
+        <foreach param="path" target="project.xml.include.concat">
+            <param name="concat.output" value="${project.output.xml}" />
             <path>
-                <fileset dir="${project.src.dir.images}" includes="*png" />
+                <fileset dir="${project.src.dir.xml}" includes="*xml" />
             </path>
         </foreach>
-        <concat destfile="${project.output.images}" append="yes">
+        <concat destfile="${project.output.xml}" append="yes">
             <string>&#125;;</string>
         </concat>
-        <replaceregexp match="\,\}\;" replace="};" file="${project.output.images}" />
+        <replaceregexp match="\,\}\;" replace="};" file="${project.output.xml}" />
     </target>
 
-    <target name="project.xml.include">
+    <target name="project.xml.include.concat">
+        <propertyregex input="${path}"
+            override="yes"
+            property="file"
+            regexp=".*/([\w-_.]+).xml"
+            replace="\1" />
+        <echo>${file} ${concat.output}</echo>
         
+        <concat destfile="${concat.output}" append="yes">
+            <string>'${file}':</string><file file="${path}" /><string>,</string>
+        </concat>
     </target>
 </project>

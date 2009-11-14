@@ -1,12 +1,12 @@
 (function(Backpack)
 {
-    var ready = false,
-        sliderBody;
+    var $ready = false,
+        $sliderBody;
 
-    function handleClick(slider)
+    function slideBar_handleSliderClick(slider)
     {
-        ;;;console.log('Backpack.sliderBody::handleClick');
-        if(!ready) {
+        ;;;console.log('Backpack.sliderBody::slideBar_handleSliderClick',slider);
+        if(!$ready) {
             ;;;console.error("Slider clicked before ready, did something go wrong?");
             return;
         }
@@ -14,37 +14,24 @@
         Backpack.fireEvent('slider-click', slider);
     }
 
-    function handleReady(slider)
+    function slideBar_handleSliderReady(slider)
     {
-        ;;;console.log('Backpack.sliderBody::handleReady');
-        sliderBody = slider;
+        ;;;console.log('Backpack.sliderBody::slideBar_handleSliderReady');
+        $sliderBody = slider;
         Backpack.fireEvent('slider-ready', slider);
-        ready = true;
+        $ready = true;
     }
-
-    // setup the modules init methods (register, init, run) and external methods
-    Backpack.slideBar =
+    
+    function sliderBar_handleSliderReadySetup()
     {
-        NAME: 'slideBar',
-
-        // runs during Backpack.init()
-        init: function()
-        {
-            ;;;console.log('Backpack.slideBar.init');
-            jetpack.slideBar.append({
-                onClick: handleClick,
-                onReady: handleReady,
-                width: 250
-            });
-        },
-        
-        // runs during addModule
-        register: function()
-        {
-            jetpack.future.import('slideBar');
-        }
+        ;;;console.log('Backpack.sliderBar #Backpack.event.setup("slider-ready")');
+        jetpack.future.import('slideBar');
+        jetpack.slideBar.append({
+            onClick: slideBar_handleSliderClick,
+            onReady: slideBar_handleSliderReady,
+            width: 250
+        });
     };
 
-    // register the module, this runs register
-    Backpack.addModule(Backpack.slideBar);
+    Backpack.event.setup('slider-ready', sliderBar_handleSliderReadySetup);
 })(Backpack);
