@@ -141,6 +141,29 @@
         <delete file="${path}.base64" />
     </target>
 
+    <target name="project.spawn"
+            depends="build.setup"
+            description="Creates new skeleton project">
+        <mkdir dir="${project.name}" />
+        <mkdir dir="${project.src.dir.images}" />
+        <mkdir dir="${project.src.dir.xml}" />
+        <concat destfile="${project.src.dir.js}/${project.name}.core.js">(function(${backpack.namespace})
+{
+    ${backpack.namespace}.projectName = "${project.name}";
+
+    ${backpack.namespace}.on('running', function()
+    {
+    });
+    ${backpack.namespace}.on('status-ready', function()
+    {
+    });
+    ${backpack.namespace}.on('slider-ready', function()
+    {
+    });
+})(${backpack.namespace});
+        </concat>
+    </target>
+
     <target name="project.xml.include">
         <echo>Including XML</echo>
         <concat destfile="${project.output.xml}">
