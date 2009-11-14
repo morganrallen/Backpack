@@ -10,6 +10,14 @@
     <property name="backpack.src.dir" value="${backpack.basedir}/../src" />
     <property name="backpack.output.dir" value="${backpack.basedir}/.." />
 
+    <condition
+        property="project.output.file"
+        value="${project.output.file}"
+        else="${backpack.basedir}/../backpack.js"
+    >
+        <isset property="project.output.file" />
+    </condition>
+
     <condition 
         property="project.src.dir"
         value="${project.dir}"
@@ -36,6 +44,7 @@
 
     <property name="project.build.filelist" value="${project.src.dir}/build.filelist" />
     <property name="project.image.dest" value="${project.src.dir}/${project.name}.images.js" />
+    <property name="project.xml.dest" value="${project.src.dir}/${project.name}.xml.js" />
 
     <target name="json-concat">
         <propertyregex input="${path}"
@@ -47,6 +56,20 @@
             <string>'${file}': 'data:image/png;base64,</string>
             <file file="${path}" />
             <string>',</string>
+        </concat>
+    </target>
+
+    <target name="xml-concat">
+        <propertyregex input="${path}"
+            override="yes"
+            property="file"
+            regexp=".*/([\w-_.]+).xml"
+            replace="\1" />
+        <echo>${path} - ${file}</echo>
+        <concat destfile="${project.xml.dest}" append="yes">
+            <string>'${file}': </string>
+            <file file="${path}" />
+            <string>,</string>
         </concat>
     </target>
 
@@ -70,9 +93,22 @@
             <concat destfile="${project.image.dest}" append="yes">&#125;;</concat>
 
             <replaceregexp match="\,\}\;" replace="};" file="${project.image.dest}" />
+
+            <echo message="Importing XML" />
+            <concat destfile="${project.xml.dest}">
+                <string>${project.namespace}.${project.name}.xml = &#123;</string>
+            </concat>
+            <foreach param="path" target="xml-concat">
+                <path>
+                    <fileset dir="${project.src.dir}/xml" includes="*xml" />
+                </path>
+            </foreach>
+            <concat destfile="${project.xml.dest}" append="yes">&#125;;</concat>
+
+            <replaceregexp match="\,\}\;" replace="};" file="${project.xml.dest}" />
+
             <echo message="Building Backpack" />
-<!--             <concat destfile="${backpack.output.dir}/backpack.js"> -->
-                <concat destfile="/home/morgan/priv/devel/jetpack/hacking/testpack.js">
+                <concat destfile="${project.output.file}">
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />
@@ -82,6 +118,7 @@
                     <file name="backpack.selection.js" />
                     <file name="backpack.slideBar.js" />
                     <file name="backpack.statusBar.js" />
+                    <file name="backpack.e4x.js" />
                     
                     <file name="backpack.init.js" />
 <!--                     <file name="backpack.run.js" /> -->
@@ -89,9 +126,13 @@
 
                 <fileset dir="${project.src.dir}" includesfile="${project.build.filelist}" />
             </concat>
+
+            <concat destfile="${project.output.file}" append="yes">Backpack.run();</concat>
             <delete>
                 <fileset dir="${project.src.dir}/images/" includes="*.base64" />
             </delete>
+
+
     </target>
 
     <target name="build.all"

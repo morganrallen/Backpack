@@ -3,6 +3,8 @@
     var $sliderBody,
         $statusBody;
 
+    Backpack.projectName = 'scrap';
+
     // not so sure about this....
     Backpack.scrap =
     {
@@ -12,9 +14,8 @@
     Backpack.event.on('slider-ready', function(event, slider)
     {
         ;;;console.log('Backpack.scrap.on("slider-ready")');
-        $sliderBody = $(slider.contentDocument.documentElement);
-
-        $sliderBody.append('Blalalal');
+//        $sliderBody = $(slider.contentDocument.documentElement);
+//        $sliderBody.append('Blalalal');
     });
 
     Backpack.event.on('slider-click', function(event, slider)
