@@ -4,3 +4,5 @@ Features
 + Automatic setup of slider and status bar
 + Event based I/O
 + Images are base64 encoded and included in the project namespace
++ External XML can be included with e4x
++ Helpers provided check for slideBar.xml and statusBar.xml content and automaticly populate them
