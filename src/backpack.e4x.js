@@ -1,25 +1,27 @@
 (function(Backpack)
 {
-    Backpack.on('running', function()
+    function e4x_handleSliderReady(event, slider)
     {
-        function handleSliderReady(event, slider)
-        {
-            $(slider.contentDocument.documentElement).append(Backpack[Backpack.projectName].xml.slideBar.toString());
-        };
+        ;;;console.log("Backpack.e4x::e4x_handleSliderReady");
+        $(slider.contentDocument.documentElement).append(Backpack[Backpack.projectName].xml.slideBar.toString());
+    };
 
-        function handleStatusReady(event, statusBody)
-        {
-            console.log(Backpack[Backpack.projectName].xml.statusBar.toString(),statusBody);
-            $(statusBody).append(Backpack[Backpack.projectName].xml.statusBar.toString());
-        };
+    function e4x_handleSliderSetup(event, slider)
+    {
+        Backpack.event.on('slider-ready', e4x_handleSliderReady);
+    };
 
-        if(Backpack[Backpack.projectName].xml) {
-            if(Backpack[Backpack.projectName].xml.slideBar) {
-                Backpack.event.on('slider-ready', handleSliderReady);
-            }
-            if(Backpack[Backpack.projectName].xml.statusBar) {
-                Backpack.event.on('status-ready', handleStatusReady);
-            }
-        };
-    });
+    function e4x_handleStatusReady(event, statusBody)
+    {
+        ;;;console.log("Backpack.e4x::e4x_handleStatusReady");
+        $(statusBody).append(Backpack[Backpack.projectName].xml.statusBar.toString());
+    };
+
+    function e4x_handleStatusSetup(event, status)
+    {
+        Backpack.event.on('status-ready', e4x_handleStatusReady);
+    };
+
+    Backpack.event.setup('slider-ready', e4x_handleSliderSetup);
+    Backpack.event.setup('status-ready', e4x_handleStatusSetup);
 })(Backpack);

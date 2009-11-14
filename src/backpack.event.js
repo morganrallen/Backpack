@@ -1,6 +1,7 @@
 (function(Backpack)
 {
-    var $setups = {};
+    var $setups = {},
+        $suspendSetups = false;
 
     Backpack.event =
     {
@@ -8,12 +9,14 @@
         on: function(type, data)
         {
             ;;;console.log('Backpack.event.on', type);
-            if($setups[type]) {
-                var cb;
-                while(cb = $setups[type].shift()) {
-                    cb();
+            // this is the first time something has subscribed to this event
+            // run through all the setups so the firing components get ready.
+            if($setups[type] && !$suspendSetups) {
+                $suspendSetups = true;
+                for(var i = 0; i < $setups[type].length; i++) {
+                    $setups[type][i]();
                 }
-                delete $setups[type];
+                $suspendSetups = false;
             }
             jQuery.event.add(Backpack, type, data);
         },

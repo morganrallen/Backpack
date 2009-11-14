@@ -3,9 +3,9 @@
     var $ready = false,
         $sliderBody;
 
-    function handleClick(slider)
+    function slideBar_handleSliderClick(slider)
     {
-        ;;;console.log('Backpack.sliderBody::handleClick');
+        ;;;console.log('Backpack.sliderBody::slideBar_handleSliderClick',slider);
         if(!$ready) {
             ;;;console.error("Slider clicked before ready, did something go wrong?");
             return;
@@ -14,21 +14,24 @@
         Backpack.fireEvent('slider-click', slider);
     }
 
-    function handleReady(slider)
+    function slideBar_handleSliderReady(slider)
     {
-        ;;;console.log('Backpack.sliderBody::handleReady');
+        ;;;console.log('Backpack.sliderBody::slideBar_handleSliderReady');
         $sliderBody = slider;
         Backpack.fireEvent('slider-ready', slider);
         $ready = true;
     }
-
-    Backpack.event.setup('slider-ready', function()
+    
+    function sliderBar_handleSliderReadySetup()
     {
+        ;;;console.log('Backpack.sliderBar #Backpack.event.setup("slider-ready")');
         jetpack.future.import('slideBar');
         jetpack.slideBar.append({
-            onClick: handleClick,
-            onReady: handleReady,
+            onClick: slideBar_handleSliderClick,
+            onReady: slideBar_handleSliderReady,
             width: 250
         });
-    });
+    };
+
+    Backpack.event.setup('slider-ready', sliderBar_handleSliderReadySetup);
 })(Backpack);

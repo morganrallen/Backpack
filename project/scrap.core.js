@@ -3,6 +3,8 @@
     var $sliderBody,
         $statusBody;
 
+    // this is so the Backpack.core can look for things in the poject for automation
+    // e4x setups,..
     Backpack.projectName = 'scrap';
 
     // not so sure about this....
@@ -14,8 +16,9 @@
     Backpack.event.on('slider-ready', function(event, slider)
     {
         ;;;console.log('Backpack.scrap.on("slider-ready")');
-//        $sliderBody = $(slider.contentDocument.documentElement);
-//        $sliderBody.append('Blalalal');
+        $sliderBody = $(slider.contentDocument.documentElement);
+        $sliderBody.find('.title').css('color', 'red');
+        $sliderBody.append('<div>This one is from Backpack.scrap.core</div>');
     });
 
     Backpack.event.on('slider-click', function(event, slider)

@@ -115,10 +115,11 @@
                     <file name="backpack.event.js" />
                     <file name="backpack.mixins.js" />
 
+                    <file name="backpack.e4x.js" />
+
                     <file name="backpack.selection.js" />
                     <file name="backpack.slideBar.js" />
                     <file name="backpack.statusBar.js" />
-                    <file name="backpack.e4x.js" />
                     
                     <file name="backpack.init.js" />
 <!--                     <file name="backpack.run.js" /> -->
