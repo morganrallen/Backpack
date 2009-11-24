@@ -91,6 +91,7 @@
                     <file name="backpack.statusBar.js" />
                     <file name="backpack.selection.js" />
                     <file name="backpack.tabs.js" />
+                    <file name="backpack.firstrun.js" />
                     
                     <file name="backpack.mixins.js" />
                 </filelist>
