@@ -25,38 +25,45 @@ var Backpack = (function() // XXX change namespace
 })(Backpack);
 (function(Backpack)
 {
-    var $setups = {},
-        $suspendSetups = false;
+    var $events =
+    {
+    };
+
+    function eventQueue(type)
+    {
+        this.subscriptions = [];
+        this.setups = [];
+    };
 
     function handleRunning()
     {
-        for(var j in $setups) {
-            for(var i = 0; i < $setups[j].length; i++) {
-                $setups[j][i]();
-            }
+    };
+
+    eventQueue.prototype =
+    {
+        fireEvent: function(data)
+        {
+        },
+        on: function(cb, data, scope)
+        {
+        },
+        setup: function(type)
+        {
         }
     };
 
     Backpack.event =
     {
-        fireEvent: Backpack.fireEvent,
-        on: function(type, data)
+        fireEvent: function(type, data)
         {
-            ;;;console.log('Backpack.event.on', type);
-            // this is the first time something has subscribed to this event
-            // run through all the setups so the firing components get ready.
-            jQuery.event.add(Backpack, type, data);
+        },
+        on: function(type, cb, data, scope)
+        {
         },
         setup: function(type, cb)
         {
-            ;;;console.log('Backpack.event.setup', type);
-            if(!$setups[type]) {
-                $setups[type] = [];
-            }
-
-            $setups[type].push(cb);
         }
-    }
+    };
 
     Backpack.event.on('running', handleRunning);
 })(Backpack);
@@ -178,6 +185,102 @@ var Backpack = (function() // XXX change namespace
     }
 
     Backpack.event.setup('selection', selection_handleSelectionSetup);
+})(Backpack);
+(function(Backpack)
+{
+    // this will eventually be an option
+    var $tabs =
+        {
+            byUrl: {},
+            byTabNumber: {}
+        },
+        $tracking = true;
+
+    function tabs_handleTabsOnCloseSetup()
+    {
+        jetpack.tabs.onClose(tabs_handleTabOnClose);
+    };
+
+    function tabs_handleTabsOnFocusSetup()
+    {
+        jetpack.tabs.onFocus(tabs_handleTabOnFocus);
+    };
+
+    function tabs_handleTabsOnOpenSetup()
+    {
+        jetpack.tabs.onOpen(tabs_handleTabOnOpen);
+    };
+
+    function tabs_handleTabsOnReadySetup()
+    {
+        jetpack.tabs.onReady(tabs_handleTabOnReady);
+    };
+
+    function tabs_handleTabOnClose(doc)
+    {
+        jQuery.event.trigger('tab-close', doc);
+    };
+
+    function tabs_handleTabOnFocus(doc)
+    {
+        if($tracking && !(this.url in $tabs.byUrl)) {
+            tabs_trackTab(this);
+        }
+
+        jQuery.event.trigger('tab-focus', doc);
+    };
+
+    function tabs_handleTabOnOpen(doc)
+    {
+        if($tracking) {
+            tabs_trackTab(this);
+        }
+
+        jQuery.event.trigger('tab-open', doc);
+    };
+
+    function tabs_handleTabOnReady(doc)
+    {
+        jQuery.event.trigger('tab-ready', doc);
+    };
+
+    function tabs_trackTab(tab)
+    {
+        $tabs.byUrl[tab.url] = tab;
+        $tabs.byTabNumber[jetpack.tabs.indexOf(tab)] = tab;
+    };
+
+    if($tracking) {
+        tabs_handleTabsOnCloseSetup();
+        tabs_handleTabsOnFocusSetup();
+        tabs_handleTabsOnOpenSetup();
+        tabs_handleTabsOnReadySetup();
+    } else {
+        Backpack.event.setup('tab-close', tabs_handleTabsOnCloseSetup);
+        Backpack.event.setup('tab-focus', tabs_handleTabsOnFocusSetup);
+        Backpack.event.setup('tab-open', tabs_handleTabsOnOpenSetup);
+        Backpack.event.setup('tab-ready', tabs_handleTabsOnReadySetup);
+    };
+
+    Backpack.tabs =
+    {
+        getByUrl: function(url)
+        {
+            if(url in $tabs.byUrl) {
+                return $tabs.byUrl[url];
+            }
+
+            for(var i = 0; i < jetpack.tabs.length; i++) {
+                if(url == jetpack.tabs[i].url) {
+                    // cache find
+                    return jetpack.tabs[i];
+                }
+            }
+
+            return false;
+        },
+
+    };
 })(Backpack);
 (function(Backpack)
 {
