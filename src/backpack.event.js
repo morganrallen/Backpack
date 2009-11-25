@@ -6,6 +6,7 @@
     {
         fireEvent: function(type, data)
         {
+            ;;;console.log('Backpack.event.fireEvent(' + type + ')');
             jQuery.event.trigger(type, data, Backpack);
         },
         on: function(type, data)

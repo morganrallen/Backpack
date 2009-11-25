@@ -29,6 +29,7 @@ var Backpack = (function()
     {
         fireEvent: function(type, data)
         {
+            ;;;console.log('Backpack.event.fireEvent(' + type + ')');
             jQuery.event.trigger(type, data, Backpack);
         },
         on: function(type, data)
@@ -271,22 +272,18 @@ var Backpack = (function()
 })(Backpack);
 (function(Backpack)
 {
-    Backpack.__defineSetter__('firstRun', function(f)
+    function firstRun_handleFirstRunSetup()
     {
-        ;;;console.log('Backpack.firstRun');
-        // this is basically a proof of concept. Eventually 
-        // (after Backpack.storage is implemented) this will
-        // run throught that.
+        ;;;console.log('Backpack.firstRun #Backpack.event.setup("first-run")');
+        jetpack.future.import("storage.simple");
 
-        if(!jetpack.storage.simple) {
-            jetpack.future.import("storage.simple");
+        if(jetpack.storage.simple.firstRunDone !== true) {
+            jetpack.storage.simple.firstRunDone = true;
+            Backpack.event.fireEvent('first-run');
         };
+    };
 
-        if(jetpack.storage.simple.firstRun !== true) {
-            jetpack.storage.simple.firstRun = true;
-            f();
-        };
-    });
+    Backpack.event.setup('running', firstRun_handleFirstRunSetup);
 })(Backpack);
 (function(Backpack)
 {
@@ -305,10 +302,12 @@ var Backpack = (function()
         ;;;console.log('jetly_handleIconClick');
 
         jQuery.event.trigger('jetly-icon-click');
+        jetpack.storage.simple.firstRunDone = false;
     };
 
     Backpack.event.on('status-ready', function(event, statusBar)
     {
+        ;;;console.log('jetly.on("status-ready")');
         $statusBody = $('body', statusBar);
         $statusIcon = $('<img src="' + Backpack.jetly.images.favicon + '" />', $statusBody)
             .click(jetly_handleIconClick);
@@ -328,17 +327,16 @@ var Backpack = (function()
             jetpack.tabs.open('http://bit.ly');
         });
     });
+    
+    Backpack.event.on('first-run', function(event)
+    {
+        console.log('I am running the first time, but not again');
+    });
 
     Backpack.event.on('running', function()
     {
     });
-
-    Backpack.firstRun = function()
-    {
-        console.log('I am running the first time, but not again');
-    }
 })(Backpack);
-        
 Backpack.jetly.images = {'favicon': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAvBJREFUeNp8k1tIVFEUhv85x8lRZxx1bt7GMS+TqHhXwrK8PfRQBJnTk8VAkEFRQSAkPQViUFjRW28SEUzhBU0RxjBQI0ezEmdEEzUsMy856ow2ZzytfVLLoDZ87L3XXvz7rP+sLausrOQAhBL51VXltwty0rODFtsAhQGcrghnLtSX22w2O/4xAggdcfLO9ZIHUR5bIMZt2KIAF5EP0e1CXKRSj/8MdnsiUTY3O8nE4Pwk4pN4CM61DDiX4mA9f/HJ8GCvu7urpf1mbU3Z3wJ8WlpaDM3mvpEVveurUpWaUcAlx6mhC16HPiYZOjUHQ7g8MD5anVyQlXi2vPhgnldQdI6Ojm7slDBBdBLhBoMxMnW/ipcFxUrq4trkntuCieKsiOP4kddIvpzY+QKBZnWsPujEFUtCslzOA4L7v+hDRbPRlDTSbnc4pRK0Eaqqc6eLLRH8TID9zRz6388jTLEhAWFd4nn3LBwTPvjWF2DSCgg1FhbGJxzoYSYefXjjWE12UnBgz9Ac0suvw1J9Fx0jaoibixIv+j4jvfQSrJfrMThnlGLmmMDYkhxNM3f/3EajuNgPhsfjxcDAAKxWK0JCNYBv5Rd+L6ampmCxWBCs+hX/OvwImarXRn7Gl3lq+vOyNkm7ypk0G3jW5YLPDxQZx2HSbJKTPkSHCeh4OQyfIMPBqFEp7vEr0eYQn7K/YHdM8vu0yk1z1WEvV2fx/rbdv+0+ZV07hj3x3hGZq2VAUcs8aCL6h6YC1jxeOtkSMD0PCbbegZ19W9na3b+b4Zsp4wsTcDGBeTc/9twRtAWREkQ/Hr/RYnohAM5ZXpob7AYsuFlzCGh7q3g39kV+j3rBy0r4TjiIlM4PIVrKMFXkrnJFZq8ksjPY3qT5gabBkI/PHKqrFFpmcZkoisxdFa1zCdZdpTqVkFJX8U0xvSjfFTBpfLjVqm2dWZI30HaQbl+VBOg5SzOhJJKII0Qh8ecrZI70Ea+2W3+NFcMOfgowADS4QJjmu+UEAAAAAElFTkSuQmCC'};Backpack.jetly.xml = {'slideBar':<div id="jetly-header">
     <style>
     <![CDATA[
