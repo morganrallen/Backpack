@@ -18,9 +18,10 @@
     </target>
 
     <target name="build.concat" depends="backpack.build, project.build">
-        <concat destfile="${backpack.output.js}">
+        <concat destfile="${backpack.output.js}" append="yes">
             <filelist>
-                <file name="${backpack.core.output.js}" />
+<!-- I do not actually like having the intereme core, ugly diffs -->
+<!--                 <file name="${backpack.core.output.js}" /> -->
                 <file name="${project.output.js}" />
             </filelist>
             <string>${backpack.namespace}.run();</string>
@@ -80,7 +81,8 @@
     >
 
             <echo message="Building Backpack" />
-             <concat destfile="${backpack.core.output.js}">
+<!--             <concat destfile="${backpack.core.output.js}"> -->
+            <concat destfile="${backpack.output.js}">
                 <filelist dir="${backpack.src.dir}">
                     <file name="backpack.core.js" />
                     <file name="backpack.util.js" />
@@ -93,7 +95,7 @@
                     <file name="backpack.tabs.js" />
                     <file name="backpack.firstrun.js" />
                     
-                    <file name="backpack.mixins.js" />
+<!--                     <file name="backpack.mixins.js" /> -->
                 </filelist>
             </concat>
     </target>

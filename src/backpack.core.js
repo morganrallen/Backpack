@@ -1,12 +1,10 @@
-var Backpack = (function() // XXX change namespace
+var Backpack = (function()
 {
     return {
         run: function()
         {
             ;;;console.log('Backpack.run');
-
-            this.ready = true;
-            this.fireEvent('running');
+            Backpack.event.fireEvent('running');
         }
     };
 })();

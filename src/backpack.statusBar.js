@@ -11,14 +11,14 @@
             return;
         }
         
-        Backpack.fireEvent('status-click', status);
+        Backpack.event.fireEvent('status-click', status);
     }
 
     function statusBar_handleStatusReady(status)
     {
         ;;;console.log('Backpack.statusBody::statusBar_handleStatusReady');
         statusBody = status;
-        Backpack.fireEvent('status-ready', status);
+        Backpack.event.fireEvent('status-ready', status);
         ready = true;
     }
 

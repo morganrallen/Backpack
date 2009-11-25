@@ -1,44 +1,33 @@
 (function(Backpack)
 {
-    var $events =
-    {
-    };
-
-    function eventQueue(type)
-    {
-        this.subscriptions = [];
-        this.setups = [];
-    };
-
-    function handleRunning()
-    {
-    };
-
-    eventQueue.prototype =
-    {
-        fireEvent: function(data)
-        {
-        },
-        on: function(cb, data, scope)
-        {
-        },
-        setup: function(type)
-        {
-        }
-    };
+    var $setups = {};
 
     Backpack.event =
     {
         fireEvent: function(type, data)
         {
+            jQuery.event.trigger(type, data, Backpack);
         },
-        on: function(type, cb, data, scope)
+        on: function(type, data)
         {
+            ;;;console.log('Backpack.event.on', type);
+            if($setups[type]) {
+                var cb;
+                while(cb = $setups[type].shift()) {
+                    cb();
+                }
+                delete $setups[type];
+            }
+            jQuery.event.add(Backpack, type, data);
         },
         setup: function(type, cb)
         {
-        }
-    };
+            ;;;console.log('Backpack.event.setup', type);
+            if(!$setups[type]) {
+                $setups[type] = [];
+            }
 
-    Backpack.event.on('running', handleRunning);
+            $setups[type].push(cb);
+        }
+    }
 })(Backpack);

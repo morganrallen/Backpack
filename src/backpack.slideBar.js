@@ -11,14 +11,14 @@
             return;
         }
         
-        Backpack.fireEvent('slider-click', slider);
+        Backpack.event.fireEvent('slider-click', slider);
     }
 
     function slideBar_handleSliderReady(slider)
     {
         ;;;console.log('Backpack.sliderBody::slideBar_handleSliderReady');
         $sliderBody = slider;
-        Backpack.fireEvent('slider-ready', slider);
+        Backpack.event.fireEvent('slider-ready', slider);
         $ready = true;
     }
     

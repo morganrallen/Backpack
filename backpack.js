@@ -1,12 +1,10 @@
-var Backpack = (function() // XXX change namespace
+var Backpack = (function()
 {
     return {
         run: function()
         {
             ;;;console.log('Backpack.run');
-
-            this.ready = true;
-            this.fireEvent('running');
+            Backpack.event.fireEvent('running');
         }
     };
 })();
@@ -25,47 +23,36 @@ var Backpack = (function() // XXX change namespace
 })(Backpack);
 (function(Backpack)
 {
-    var $events =
-    {
-    };
-
-    function eventQueue(type)
-    {
-        this.subscriptions = [];
-        this.setups = [];
-    };
-
-    function handleRunning()
-    {
-    };
-
-    eventQueue.prototype =
-    {
-        fireEvent: function(data)
-        {
-        },
-        on: function(cb, data, scope)
-        {
-        },
-        setup: function(type)
-        {
-        }
-    };
+    var $setups = {};
 
     Backpack.event =
     {
         fireEvent: function(type, data)
         {
+            jQuery.event.trigger(type, data, Backpack);
         },
-        on: function(type, cb, data, scope)
+        on: function(type, data)
         {
+            ;;;console.log('Backpack.event.on', type);
+            if($setups[type]) {
+                var cb;
+                while(cb = $setups[type].shift()) {
+                    cb();
+                }
+                delete $setups[type];
+            }
+            jQuery.event.add(Backpack, type, data);
         },
         setup: function(type, cb)
         {
-        }
-    };
+            ;;;console.log('Backpack.event.setup', type);
+            if(!$setups[type]) {
+                $setups[type] = [];
+            }
 
-    Backpack.event.on('running', handleRunning);
+            $setups[type].push(cb);
+        }
+    }
 })(Backpack);
 (function(Backpack)
 {
@@ -111,14 +98,14 @@ var Backpack = (function() // XXX change namespace
             return;
         }
         
-        Backpack.fireEvent('slider-click', slider);
+        Backpack.event.fireEvent('slider-click', slider);
     }
 
     function slideBar_handleSliderReady(slider)
     {
         ;;;console.log('Backpack.sliderBody::slideBar_handleSliderReady');
         $sliderBody = slider;
-        Backpack.fireEvent('slider-ready', slider);
+        Backpack.event.fireEvent('slider-ready', slider);
         $ready = true;
     }
     
@@ -148,14 +135,14 @@ var Backpack = (function() // XXX change namespace
             return;
         }
         
-        Backpack.fireEvent('status-click', status);
+        Backpack.event.fireEvent('status-click', status);
     }
 
     function statusBar_handleStatusReady(status)
     {
         ;;;console.log('Backpack.statusBody::statusBar_handleStatusReady');
         statusBody = status;
-        Backpack.fireEvent('status-ready', status);
+        Backpack.event.fireEvent('status-ready', status);
         ready = true;
     }
 
@@ -284,39 +271,30 @@ var Backpack = (function() // XXX change namespace
 })(Backpack);
 (function(Backpack)
 {
-    var $eventQueue = [];
-    Backpack.mixins =
+    Backpack.__defineSetter__('firstRun', function(f)
     {
-        fireEvent: function(type, data)
-        {
-            if(!Backpack.ready) {
-                return $eventQueue.push(arguments);
-            }
-            
-            if($eventQueue.length > 0) {
-                var e;
-                while(e = $eventQueue.shift()) {
-                    ;;;console.log('Backpack.fireEvent', type);
-                    jQuery.event.call(arguments);
-                }
-            }
+        ;;;console.log('Backpack.firstRun');
+        // this is basically a proof of concept. Eventually 
+        // (after Backpack.storage is implemented) this will
+        // run throught that.
 
-            ;;;console.log('Backpack.fireEvent' + (Backpack.ready ? '' : '(!ready)'), type);
-            jQuery.event.trigger(type, [data], Backpack);
-        },
-        on: function(type, data)
-        {
-            jQuery.event.add(Backpack, type, data);
-        }
-    };
+        if(!jetpack.storage.simple) {
+            jetpack.future.import("storage.simple");
+        };
 
-    for(var i in Backpack.mixins) {
-        Backpack[i] = Backpack.mixins[i];
-    }
+        if(jetpack.storage.simple.firstRun !== true) {
+            jetpack.storage.simple.firstRun = true;
+            f();
+        };
+    });
 })(Backpack);
 (function(Backpack)
 {
     Backpack.projectName = "jetly";
+
+    Backpack.jetly =
+    {
+    };
 
     var $sliderBody,
         $statusBody,
@@ -354,10 +332,6 @@ var Backpack = (function() // XXX change namespace
     Backpack.event.on('running', function()
     {
     });
-
-    Backpack.jetly =
-    {
-    };
 
     Backpack.firstRun = function()
     {
