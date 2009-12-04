@@ -166,6 +166,9 @@
     });
 })(${backpack.namespace});
         </concat>
+        <concat destfile="${project.src.dir}/manifest.js">var manifest =
+{
+};</concat>
     </target>
 
     <target name="project.xml.include">

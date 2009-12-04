@@ -4,6 +4,8 @@ var Backpack = (function()
         run: function()
         {
             ;;;console.log('Backpack.run');
+
+            Backpack.running = true;
             Backpack.event.fireEvent('running');
         }
     };
