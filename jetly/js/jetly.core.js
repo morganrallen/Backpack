@@ -1,17 +1,22 @@
 (function(Backpack)
 {
     jetpack.future.import("storage.settings");
+    jetpack.future.import("storage.simple");
+
+    var $bitlyAPIUrl = 'http://bit.ly/account/your_api_key',
+        $bitlyURL = 'http://bit.ly';
 
     Backpack.projectName = "jetly";
 
     Backpack.jetly =
     {
+        bitlyUrl: $bitlyURL,
         I18N: {
-            "Bit.ly Username":
-                "Bit.ly Username",
+            "Bit.ly Login":
+                "Bit.ly Login",
 
-            "Bit.ly API Token":
-                "Bit.ly API Token"
+            "Bit.ly API Key":
+                "Bit.ly API Key"
         }
     };
 
@@ -19,46 +24,56 @@
         $statusBody,
         $statusIcon;
 
-    function jetly_handleIconClick(event)
+    function jetly_handleFirstRun()
     {
-        ;;;console.log('jetly_handleIconClick');
-
-        jQuery.event.trigger('jetly-icon-click');
-        jetpack.storage.simple.firstRunDone = false;
+        ;;;console.log('I am running the first time, but not again');
     };
 
-    Backpack.event.on('status-ready', function(statusBar)
+    function jetly_handleIconClick(event)
     {
-        ;;;console.log('jetly.on("status-ready")');
+        Backpack.event.fireEvent('jetly-icon-click');
+
+        Backpack.jetly.util.shortenUrl(jetpack.tabs.focused.url, function(info)
+        {
+            console.log(info);
+        });
+    };
+
+    function jetly_handlerSliderReady(slider)
+    {
+        $sliderBody = $('html', slider.contentDocument);
+
+        $sliderBody.find('#bitly-logo').click(function()
+        {
+            var bitlyTab = Backpack.tabs.getByUrl($bitlyURL);
+            if(!bitlyTab) {
+                jetpack.tabs.open('http://bit.ly').focus();
+            } else {
+                bitlyTab.focus();
+            }
+        });
+
+        $sliderBody.find("#clearFirstRun")
+            .click(function(event)
+            {
+                ;;;console.log('Clearing first-run');
+                jetpack.storage.simple.firstRunDone = false;
+            });
+    };
+
+    function jetly_handlerStatusReady(statusBar)
+    {
         $statusBody = $('body', statusBar);
-        console.log(statusBar);
+
         $statusIcon = $('<img src="' + Backpack.jetly.images.favicon + '" />', $statusBody)
             .click(jetly_handleIconClick);
 
         $statusBody.append($statusIcon);
-    });
+    };
 
-    Backpack.event.on('slider-ready', function(slider)
-    {
-        ;;;console.log('jetly.on("slider-ready")');
-        $sliderBody = $('body', slider.contentDocument);
-        console.log($sliderBody);
-
-        console.log($sliderBody.find('#bitly-logo'));
-        $sliderBody.find('#bitly-logo').click(function()
-        {
-            jetpack.tabs.open('http://bit.ly');
-        });
-    });
-    
-    Backpack.event.on('first-run', function()
-    {
-        console.log('I am running the first time, but not again');
-    });
-
-    Backpack.event.on('running', function()
-    {
-    });
+    Backpack.event.on('first-run', jetly_handleFirstRun);
+    Backpack.event.on('slider-ready', jetly_handlerSliderReady);
+    Backpack.event.on('status-ready', jetly_handlerStatusReady);
 })(Backpack);
 
 var manifest =
@@ -66,13 +81,13 @@ var manifest =
     settings:
     [
         {
-            label: Backpack.jetly.I18N["Bit.ly Username"],
-            name: "username",
+            label: Backpack.jetly.I18N["Bit.ly Login"],
+            name: "login",
             type: "text"
         },
         {
-            label: Backpack.jetly.I18N["Bit.ly API Token"],
-            name: "apiToken",
+            label: Backpack.jetly.I18N["Bit.ly API Key"],
+            name: "apiKey",
             type: "text"
         }
     ]

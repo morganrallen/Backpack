@@ -64,16 +64,20 @@
         <property name="project.src.dir.js" value="${project.src.dir}/js" />
         <property name="project.src.dir.xml" value="${project.src.dir}/xml" />
         <property name="project.src.dir.images" value="${project.src.dir}/images" />
+        <property name="project.src.dir.css" value="${project.src.dir}/css" />
         <echo>project.src.dir.js ${project.src.dir.js}</echo>
         <echo>project.src.dir.xml ${project.src.dir.xml}</echo>
         <echo>project.src.dir.images ${project.src.dir.images}</echo>
+        <echo>project.src.dir.css ${project.src.dir.css}</echo>
 
         <property name="project.output.js" value="${project.src.dir}/${project.name}.js" />
         <property name="project.output.xml" value="${project.src.dir.js}/${project.name}.xml.js" />
         <property name="project.output.images" value="${project.src.dir.js}/${project.name}.images.js" />
+        <property name="project.output.css" value="${project.src.dir.js}/${project.name}.css.js" />
         <echo>project.output.js ${project.output.js}</echo>
         <echo>project.output.xml ${project.output.xml}</echo>
         <echo>project.output.images ${project.output.images}</echo>
+        <echo>project.output.css ${project.output.css}</echo>
     </target>
 
     <target name="backpack.build"
@@ -100,10 +104,51 @@
             </concat>
     </target>
 
-    <target name="project.build" depends="project.images.encode,project.xml.include">
+    <target name="project.build" depends="project.css.encode,project.images.encode,project.xml.include">
         <concat destfile="${project.output.js}">
             <fileset dir="${project.src.dir.js}" includes="*.js" />
         </concat>
+    </target>
+
+    <target name="project.css.encode">
+        <echo message="Encoding CSS" />
+        <concat destfile="${project.output.css}">
+            <string>${backpack.namespace}.${project.name}.css = &#123;</string>
+        </concat>
+
+        <foreach param="path" target="project.css.encode.concat">
+            <param name="concat.output" value="${project.output.css}" />
+            <path>
+                <fileset dir="${project.src.dir.css}" includes="*css" />
+            </path>
+        </foreach>
+        
+        <concat destfile="${project.output.css}" append="yes">
+            <string>&#125;;</string>
+        </concat>
+        <replaceregexp match="\,\}\;" replace="};" file="${project.output.css}" />
+    </target>
+    
+    <target name="project.css.encode.concat">
+        <propertyregex input="${path}"
+            override="yes"
+            property="file"
+            regexp=".*/([\w-_.]+).css"
+            replace="\1" />
+        <echo>${file}</echo>
+        
+        <exec executable="/bin/sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="base64 -w0 ${path} &gt; ${path}.base64" />
+        </exec>
+
+        <concat destfile="${concat.output}" append="yes">
+            <string>'${file}': 'data:text/css;base64,</string>
+            <file file="${path}.base64" />
+            <string>',</string>
+        </concat>
+
+        <delete file="${path}.base64" />
     </target>
 
     <target name="project.images.encode">

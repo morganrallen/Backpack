@@ -4,7 +4,13 @@
     {
         ;;;console.log("Backpack.e4x::e4x_handleSliderReady");
         if(Backpack[Backpack.projectName].xml && Backpack[Backpack.projectName].xml.slideBar) {
-            $(slider.contentDocument.documentElement).append(Backpack[Backpack.projectName].xml.slideBar.toString());
+            var $slideBar = $(slider.contentDocument.documentElement);
+
+            if(Backpack[Backpack.projectName].css && Backpack[Backpack.projectName].css.slideBar) {
+                $slideBar.append('<link rel="stylesheet" href="' + Backpack[Backpack.projectName].css.slideBar + '" />');
+            }
+
+            $slideBar.append(Backpack[Backpack.projectName].xml.slideBar.toString());
         }
     };
 
@@ -17,7 +23,13 @@
     {
         ;;;console.log("Backpack.e4x::e4x_handleStatusReady");
         if(Backpack[Backpack.projectName].xml && Backpack[Backpack.projectName].xml.statusBar) {
-            $(statusBody).append(Backpack[Backpack.projectName].xml.statusBar.toString());
+            var $statusBody = $(statusBody);
+
+            if(Backpack[Backpack.projectName].css && Backpack[Backpack.projectName].css.statusBar) {
+                $statusBody.append('<link rel="stylesheet" href="' + Backpack[Backpack.projectName].css.statusBar + '" />');
+            }
+
+            $statusBody.append(Backpack[Backpack.projectName].xml.statusBar.toString());
         }
     };
 

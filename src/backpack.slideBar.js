@@ -24,7 +24,6 @@
     
     function sliderBar_handleSliderReadySetup()
     {
-        ;;;console.log('Backpack.sliderBar #Backpack.event.setup("slider-ready")');
         jetpack.future.import('slideBar');
         jetpack.slideBar.append({
             onClick: slideBar_handleSliderClick,

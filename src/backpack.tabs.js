@@ -6,7 +6,7 @@
             byUrl: {},
             byTabNumber: {}
         },
-        $tracking = true;
+        $tracking = false;
 
     function tabs_handleTabsOnCloseSetup()
     {
@@ -30,7 +30,7 @@
 
     function tabs_handleTabOnClose(doc)
     {
-        jQuery.event.trigger('tab-close', doc);
+        Backpack.event.fireEvent('tab-close', doc);
     };
 
     function tabs_handleTabOnFocus(doc)
@@ -39,7 +39,7 @@
             tabs_trackTab(this);
         }
 
-        jQuery.event.trigger('tab-focus', doc);
+        Backpack.event.fireEvent('tab-focus', doc);
     };
 
     function tabs_handleTabOnOpen(doc)
@@ -48,12 +48,12 @@
             tabs_trackTab(this);
         }
 
-        jQuery.event.trigger('tab-open', doc);
+        Backpack.event.fireEvent('tab-open', doc);
     };
 
     function tabs_handleTabOnReady(doc)
     {
-        jQuery.event.trigger('tab-ready', doc);
+        Backpack.event.fireEvent('tab-ready', doc);
     };
 
     function tabs_trackTab(tab)
@@ -78,13 +78,15 @@
     {
         getByUrl: function(url)
         {
-            if(url in $tabs.byUrl) {
-                return $tabs.byUrl[url];
-            }
+            // caching doesn't realyl work yet...
+//            if(url in $tabs.byUrl) {
+//                return $tabs.byUrl[url];
+//            }
 
             for(var i = 0; i < jetpack.tabs.length; i++) {
-                if(url == jetpack.tabs[i].url) {
+                if(jetpack.tabs[i].url.indexOf(url) > -1) {
                     // cache find
+                    $tabs.byUrl[url] = jetpack.tabs[i];
                     return jetpack.tabs[i];
                 }
             }

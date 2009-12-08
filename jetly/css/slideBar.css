@@ -1,0 +1,10 @@
+#body {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+}
+
+#bitly-logo-outer {
+    width: 90px;
+    overflow: hidden;
+}

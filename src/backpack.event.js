@@ -4,29 +4,38 @@
         $setups = {},
         $suspendSetups = false;
 
+    function events_runSetups(type)
+    {
+        $suspendSetups = true;
+        $setups[type].forEach(function(event, index) {
+            ;;;console.log('Backpack.event.on(%s) %o', type, event);
+            event();
+        })
+        $suspendSetups = false;
+        delete $setups[type];
+    };
+
     Backpack.event =
     {
         fireEvent: function(type, data)
         {
-            ;;;console.log('Backpack.event.fireEvent(' + type + ')');
+            ;;;console.log('Backpack.event.fireEvent(%s)', type);
+            if($setups[type] && !$suspendSetups) {
+                events_runSetups(type);
+            }
+
             if($events[type]) {
                 $events[type].forEach(function(event, index)
                 {
+                    ;;;console.log('Backpack.event.fireEvent(%s) %o', type, event.cb);
                     event.cb.call(Backpack, data);
                 });
             }
-//            jQuery.event.trigger(type, data, Backpack);
         },
         on: function(type, cb, data)
         {
-            ;;;console.log('Backpack.event.on', type);
             if($setups[type] && !$suspendSetups) {
-                $suspendSetups = true;
-                $setups[type].forEach(function(event, index) {
-                    event();
-                })
-                $suspendSetups = false;
-                delete $setups[type];
+                events_runSetups(type);
             }
 
             if(!$events[type]) {
@@ -36,7 +45,7 @@
         },
         setup: function(type, cb)
         {
-            ;;;console.log('Backpack.event.setup', type);
+            ;;;console.log('Backpack.event.setup(%s) %o', type, cb);
             if(!$events[type]) {
                 if(!$setups[type]) {
                     $setups[type] = [];

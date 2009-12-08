@@ -24,7 +24,6 @@
 
     function statusBar_handleStatusReadySetup()
     {
-        ;;;console.log('Backpack.statusBar #Backpack.event.setup("status-ready")');
         jetpack.statusBar.append({
             onClick: statusBar_handleStatusClick,
             onReady: statusBar_handleStatusReady,
